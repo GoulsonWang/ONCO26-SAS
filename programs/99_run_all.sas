@@ -12,6 +12,7 @@
 %include "&macrodir.04_build_adae.sas";
 %include "&macrodir.06_km_analysis.sas";
 %include "&macrodir.07_cox_analysis.sas";
+%include "&macrodir.09_safety_analysis.sas";
 %include "&macrodir.08_pipeline.sas";
 
 %onco26_pipeline();
