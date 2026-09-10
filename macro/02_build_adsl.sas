@@ -13,7 +13,8 @@
     bmi=BMI,
     arm=ARM,
     arm_active=ARM A,
-    arm_placebo=ARM B
+    arm_placebo=ARM B,
+    trtsdt_var=TREATMENT_START_DATE
 );
 
     data &outdata;
@@ -24,15 +25,19 @@
         else if &arm = "&arm_placebo" then TRT = "Placebo";
         else TRT = "Unknown";
         
-        label &id  = "Subject Identifier"
-              &age = "Age (years)"
-              &sex = "Sex"
-              &race = "Race"
-              &bmi = "Body Mass Index (kg/m2)"
-              &arm = "Treatment Arm (Raw)"
-              TRT  = "Treatment Group (Derived)";
+        /* Derive treatment start date (TRTSDT) */
+        TRTSDT = &trtsdt_var;
         
-        keep &id &age &sex &race &bmi &arm TRT;
+        label &id    = "Subject Identifier"
+              &age   = "Age (years)"
+              &sex   = "Sex"
+              &race  = "Race"
+              &bmi   = "Body Mass Index (kg/m2)"
+              &arm   = "Treatment Arm (Raw)"
+              TRT    = "Treatment Group (Derived)"
+              TRTSDT = "Treatment Start Date";
+        
+        keep &id &age &sex &race &bmi &arm TRT TRTSDT;
     run;
 
 %mend build_adsl;
