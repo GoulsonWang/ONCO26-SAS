@@ -1,6 +1,6 @@
 # ONCO26 Oncology Phase III Clinical Trial — SAS Analysis Pipeline
 
-A modular SAS macro pipeline for a simulated oncology Phase III clinical trial, following CDISC ADaM standards. It covers data import, analysis dataset construction, survival analysis, safety analysis, lab shift analysis, and automated report generation.
+A modular SAS macro pipeline for a simulated oncology Phase III clinical trial, following CDISC ADaM standards. It covers data import, analysis dataset construction, survival analysis, subgroup analysis, safety analysis, and automated report generation.
 
 ---
 
@@ -9,7 +9,6 @@ A modular SAS macro pipeline for a simulated oncology Phase III clinical trial, 
 ONCO-2026 is a simulated Phase III, double-blind, 1:1 randomized oncology trial with 500 patients. Patients were randomized to either the active treatment arm (ARM A) or placebo arm (ARM B). The primary endpoint is Overall Survival (OS).
 
 This project uses SAS macros to automate the full analysis workflow, from raw CSV data to statistical results and formatted reports.
-
 ---
 
 ## Features
@@ -24,6 +23,10 @@ This project uses SAS macros to automate the full analysis workflow, from raw CS
 - Kaplan-Meier survival curves with number-at-risk table
 - Log-rank test
 - Cox proportional hazards regression (adjusted HR with 95% CI)
+- Subgroup analysis across age, BMI, and sex
+- Forest plot visualization
+- Proportional hazards assumption test (supremum test)
+- Logistic regression for binary safety endpoints
 
 ### Safety Analysis
 - Treatment-emergent adverse event (TEAE) summary
@@ -36,8 +39,9 @@ This project uses SAS macros to automate the full analysis workflow, from raw CS
 - `%import_csv` — Parameterized CSV import
 - `%build_adsl` / `%build_adtte` / `%build_adae` / `%build_adlb` — Standardized dataset construction
 - `%km_analysis` / `%cox_analysis` — Automated statistical analysis
+- `%subgroup_analysis` / `%forest_plot` / `%ph_assumption` / `%logistic_analysis` — Advanced analytics
 - `%safety_analysis` / `%lab_analysis` — Formatted safety and lab tables
-- `%onco26_pipeline` — One-click full pipeline (10 steps)
+- `%onco26_pipeline` — One-click full pipeline (13 steps)
 
 ---
 
@@ -66,9 +70,12 @@ This project uses SAS macros to automate the full analysis workflow, from raw CS
 | Log-rank P-value | 0.2316 |
 | Adjusted HR (95% CI) | 0.889 (0.687–1.152) |
 | Adjusted P-value | 0.3732 |
+| PH assumption | All p > 0.05 (satisfied) |
+| Subgroup HR range | 0.809 – 0.934 |
 | TEAE records | 2692 (100%) |
 | Serious AEs | 350 (13.0%) |
 | Drug-related AEs | 1512 (56.2%) |
+| SAE odds ratio (Active vs Placebo) | 1.872 (1.307–2.681) |
 | Lab: NORMAL to HIGH | 476 records |
 | Lab: NORMAL to LOW | 816 records |
 | BMI missing | 18 (3.6%), complete-case analysis |
@@ -80,7 +87,10 @@ This project uses SAS macros to automate the full analysis workflow, from raw CS
 - **SAS 9.4** — Base SAS, SAS/STAT
 - **CDISC** — ADaM Implementation Guide
 - **Output** — ODS RTF, ODS PDF, ODS Graphics
-- **Programming** — SAS Macro Language
+- **Programming** — SAS Macro Language, parameterized programming
+
+---
+
 
 
 ---
