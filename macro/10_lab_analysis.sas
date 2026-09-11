@@ -5,7 +5,7 @@
 
 %macro lab_analysis(
     indata=adlb,
-    outpath=&outpath,
+    outpath=/home/u64589246/ONCO26_data/,
     outfile=Lab_Shift_Table.rtf
 );
 

@@ -1,15 +1,21 @@
 /* ============================================
    09_safety_analysis.sas
-   Purpose: Generate formatted safety summary tables
+   Purpose: Generate formatted safety summary tables for ADAE
    ============================================ */
 
 %macro safety_analysis(
     indata=adae,
-    outpath=&outpath,
+    outpath=/home/u64589246/ONCO26_data/,
     outfile=Safety_Summary.rtf
 );
 
-    /* ---- 1. Prepare TEAE summary data ---- */
+    /* ---- 1. Prepare TEAE summary datasets ---- */
+
+    /* Overall TEAE count by treatment */
+    proc freq data=&indata noprint;
+        where TEAE = "Y";
+        tables TRT / out=ae_overall_out;
+    run;
 
     /* TEAE by preferred term (PT) and treatment */
     proc freq data=&indata noprint;
@@ -23,19 +29,13 @@
         tables SEVERITY * TRT / out=ae_sev_out;
     run;
 
-    /* Overall TEAE count */
-    proc freq data=&indata noprint;
-        where TEAE = "Y";
-        tables TRT / out=ae_overall_out;
-    run;
-
-    /* SAE count */
+    /* Serious TEAE count */
     proc freq data=&indata noprint;
         where TEAE = "Y" and SAEFL = "Y";
         tables TRT / out=ae_sae_out;
     run;
 
-    /* Related TEAE count */
+    /* Drug-related TEAE count */
     proc freq data=&indata noprint;
         where TEAE = "Y" and AEREL = "Y";
         tables TRT / out=ae_rel_out;
@@ -48,7 +48,7 @@
     title "Safety Summary - Treatment-Emergent Adverse Events (TEAE)";
     footnote "Source: ADAE dataset";
 
-    /* Table 1: Overall TEAE summary */
+    /* Table 1: Overall TEAE */
     proc report data=ae_overall_out nowd headline headskip;
         column TRT COUNT PERCENT;
         define TRT     / display "Treatment Group";
@@ -60,21 +60,39 @@
     /* Table 2: TEAE by preferred term */
     proc report data=ae_pt_out nowd headline headskip;
         column AE_TERM TRT,COUNT TRT,PERCENT;
-        define AE_TERM     / group "Adverse Event Term";
-        define TRT         / across "Treatment Group";
-        define COUNT       / analysis sum "N" format=5.0;
-        define PERCENT     / analysis sum "Percent (%)" format=5.2;
+        define AE_TERM  / group "Adverse Event Term";
+        define TRT      / across "Treatment Group";
+        define COUNT    / analysis sum "N" format=5.0;
+        define PERCENT  / analysis sum "Percent (%)" format=5.2;
         title2 "TEAE by Preferred Term and Treatment";
     run;
 
     /* Table 3: TEAE by severity */
     proc report data=ae_sev_out nowd headline headskip;
         column SEVERITY TRT,COUNT TRT,PERCENT;
-        define SEVERITY    / group "Severity";
-        define TRT         / across "Treatment Group";
-        define COUNT       / analysis sum "N" format=5.0;
-        define PERCENT     / analysis sum "Percent (%)" format=5.2;
+        define SEVERITY / group "Severity";
+        define TRT      / across "Treatment Group";
+        define COUNT    / analysis sum "N" format=5.0;
+        define PERCENT  / analysis sum "Percent (%)" format=5.2;
         title2 "TEAE by Severity and Treatment";
+    run;
+
+    /* Table 4: Serious TEAE */
+    proc report data=ae_sae_out nowd headline headskip;
+        column TRT COUNT PERCENT;
+        define TRT     / display "Treatment Group";
+        define COUNT   / display "N of Serious TEAE";
+        define PERCENT / display "Percent (%)" format=5.2;
+        title2 "Serious TEAE by Treatment Group";
+    run;
+
+    /* Table 5: Drug-related TEAE */
+    proc report data=ae_rel_out nowd headline headskip;
+        column TRT COUNT PERCENT;
+        define TRT     / display "Treatment Group";
+        define COUNT   / display "N of Related TEAE";
+        define PERCENT / display "Percent (%)" format=5.2;
+        title2 "Drug-Related TEAE by Treatment Group";
     run;
 
     ods rtf close;
