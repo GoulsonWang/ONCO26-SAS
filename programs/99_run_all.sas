@@ -1,3 +1,8 @@
+/* ============================================
+   99_run_all.sas
+   Purpose: Run the full pipeline
+   ============================================ */
+
 %let macrodir = /home/u64589246/ONCO26_code/macro/;
 
 %include "&macrodir.00_setup.sas";
@@ -13,3 +18,4 @@
 %include "&macrodir.08_pipeline.sas";
 
 %onco26_pipeline();
+
